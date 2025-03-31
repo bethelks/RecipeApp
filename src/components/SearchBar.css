@@ -1,0 +1,11 @@
+.search-bar {
+    display: flex;
+    gap: 10px;
+  }
+  input {
+    flex-grow: 1;
+    padding: 10px;
+  }
+  button {
+    padding: 10px;
+  }

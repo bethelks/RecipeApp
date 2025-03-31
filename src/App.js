@@ -15,9 +15,7 @@ function App() {
         <Route path="/recipe" element={<RecipePage />} />
       </Routes>
     </BrowserRouter>
-
   )
 }
 
 export default App;
-

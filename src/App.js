@@ -1,6 +1,6 @@
 import React from 'react';
-import FilterRecipes from './FilterRecipes'; // Adjust the path if necessary
-import './App.css'; // Ensure this file exists and includes any global styles
+import FilterRecipes from './FilterRecipes';
+import './App.css';
 
 function App() {
   return (
@@ -11,3 +11,4 @@ function App() {
 }
 
 export default App;
+/*comment to create change so git add works*/

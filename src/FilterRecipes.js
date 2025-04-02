@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './FilterRecipes.css'; // Ensure you have a CSS file for styling
+import './FilterRecipes.css';
 
 const FilterRecipes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

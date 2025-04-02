@@ -3,6 +3,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route }from "react-router-dom";
 import Home from "./components/Home";
 import TempNavigate from "./TempNavigate";
+import FilterRecipes from './FilterRecipes';
 import RecipePage from "./components/RecipePage";
 import './App.css';
 
@@ -19,3 +20,4 @@ function App() {
 }
 
 export default App;
+

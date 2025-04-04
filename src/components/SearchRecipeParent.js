@@ -6,7 +6,7 @@ import RecipeList from './RecipeList';  // Displaying filtered recipes
 
 const SearchRecipeParent = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState(allRecipes); // Set default to all recipes
 
   useEffect(() => {
     const filtered = allRecipes.filter((recipe) => {

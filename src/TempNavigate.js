@@ -10,7 +10,6 @@ function TempNavigate() {
         <nav>
             <Link to="/" >Home</Link>
             <Link to="/recipe">Recipe Page</Link>
-            <Link to="/filter">Filter Page</Link>
         </nav>
     );
 }

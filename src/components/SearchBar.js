@@ -1,24 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './SearchBar.css';
 
-const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = React.useState('');
+const SearchBar = ({ setSearchTerm }) => {
+  const [inputValue, setInputValue] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSearch(searchTerm);
+  const handleSearchChange = (e) => {
+    setInputValue(e.target.value);
+    setSearchTerm(e.target.value); // Pass search term to parent component
   };
 
   return (
-    <form className="search-bar" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search Recipes..."
-      />
-      <button type="submit">Search</button>
-    </form>
+    <div className="search-container">
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search recipes..."
+          value={inputValue} // Controlled input
+          onChange={handleSearchChange} // Update input value
+        />
+      </div>
+    </div>
   );
 };
 

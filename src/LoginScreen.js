@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; // Import the Link component
 import "./LoginScreen.css"; // Import your CSS for styling
+import logo from './assets/images/company-logo.png';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export default function LoginScreen() {
 
   return (
     <div className="login-container">
-      <img src="/company-logo.png" alt="Company Logo" className="logo" />
+       <img src={logo} alt="Company Logo" className="logo" />
       <div className="card">
         <h2 className="title">Login</h2>
         <div className="input-group">

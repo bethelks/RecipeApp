@@ -1,24 +1,5 @@
-/* Search Container */
-.search-container {
-    position: relative;
-    padding: 20px;
-  }
-  
-  /* Search Bar */
-  .search-bar {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 70%; /* Adjusted width to make space for the filter button */
-    margin: 0 auto; /* Center the search bar */
-  }
-  
-  .search-bar input[type="text"] {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+
+
   
   .filter-button {
     position: absolute;

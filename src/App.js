@@ -9,8 +9,8 @@ import ForgotPasswordScreen from "./ForgotPasswordScreen";
 // Screens from origin/master version
 import Home from "./components/Home";
 import TempNavigate from "./TempNavigate";
-import FilterRecipes from './components/FilterRecipes';
 import RecipePage from "./components/RecipePage";
+import Favorites from "./components/Favorites";
 
 import './App.css';
 
@@ -70,7 +70,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
           <Route path="/home" element={<Home />} />
           <Route path="/recipe" element={<RecipePage />} />
-          <Route path="/filter" element={<FilterRecipes />} />
+          <Route path="/favorite" element={<Favorites />} />
         </Routes>
       </div>
     </Router>

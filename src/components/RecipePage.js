@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './RecipePage.css'; // Optional: Add your styles for this page
-import SearchBar from './SearchBar'; // Make sure you've created this component
-import FilterRecipes from './FilterRecipes'; // Make sure you've created this component
-import RecipeList from './RecipeList'; // Make sure you've created this component
-
+import './RecipePage.css'; 
+import SearchBar from './SearchBar'; 
+import FilterRecipes from './FilterRecipes'; 
+import RecipeList from './RecipeList'; 
 const allRecipes = [
 
   {
@@ -1272,27 +1271,49 @@ const allRecipes = [
 
 const RecipePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredRecipes, setFilteredRecipes] = useState(allRecipes); // Initially display all recipes
+  const [filteredRecipes, setFilteredRecipes] = useState(allRecipes);
+  const [favorites, setFavorites] = useState([]);
+
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+      const storedFavorites = localStorage.getItem('favorites');
+      if (storedFavorites) {
+          setFavorites(JSON.parse(storedFavorites));
+      }
+  }, []);
+
+  // Save favorites to localStorage
+  useEffect(() => {
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
 
   // Effect for filtering recipes based on search term
   useEffect(() => {
-    const filtered = allRecipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredRecipes(filtered);
+      const filtered = allRecipes.filter((recipe) =>
+          recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredRecipes(filtered);
   }, [searchTerm]);
 
+  const toggleFavorite = (recipe) => {
+      if (favorites.some(fav => fav.id === recipe.id)) {
+          setFavorites(favorites.filter(fav => fav.id !== recipe.id));
+      } else {
+          setFavorites([...favorites, recipe]);
+      }
+  };
+
   return (
-    <div className="recipe-page">
-      <h1>Recipe Search</h1>
-      <SearchBar setSearchTerm={setSearchTerm} />
-      <FilterRecipes 
-        allRecipes={allRecipes}  
-        setFilteredRecipes={setFilteredRecipes}  
-        searchTerm={searchTerm}  
-      />
-      <RecipeList recipes={filteredRecipes} />
-    </div>
+      <div className="recipe-page">
+          <h1>Recipe Search</h1>
+          <SearchBar setSearchTerm={setSearchTerm} />
+          <FilterRecipes 
+              allRecipes={allRecipes}  
+              setFilteredRecipes={setFilteredRecipes}  
+              searchTerm={searchTerm}  
+          />
+          <RecipeList recipes={filteredRecipes} favorites={favorites} toggleFavorite={toggleFavorite} />
+      </div>
   );
 };
 

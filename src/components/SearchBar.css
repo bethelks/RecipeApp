@@ -1,11 +1,28 @@
+/* Search Bar Container */
+.search-container {
+  position: relative;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Search Bar */
 .search-bar {
-    display: flex;
-    gap: 10px;
-  }
-  input {
-    flex-grow: 1;
-    padding: 10px;
-  }
-  button {
-    padding: 10px;
-  }
+  display: flex;
+  justify-content: center; /* Centers the search bar */
+  align-items: center;
+  width: 70%; /* You can adjust the width */
+  margin: 0 auto;
+}
+
+.search-bar input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search-bar input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff; /* Highlight border on focus */
+}

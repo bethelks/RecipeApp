@@ -61,7 +61,8 @@ export default function LoginScreen() {
 
   const toggleRegisterVisibility = () => {
     setIsRegisterVisible(!isRegisterVisible); // Toggle the registration section
-  };
+    console.log("Toggled visibility:", !isRegisterVisible);
+};
 
   return (
     <div className="login-container">
@@ -103,10 +104,70 @@ export default function LoginScreen() {
           {isRegisterVisible ? "Hide Create Account" : "Create Account"}
         </h2>
         {isRegisterVisible && (
-          <div>
-            {/* Registration input fields go here */}
-          </div>
-        )}
+    <div>
+        <div className="input-group">
+            <label htmlFor="firstName">First Name</label>
+            <input
+                id="firstName"
+                type="text"
+                placeholder="Enter your first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+            />
+        </div>
+        <div className="input-group">
+            <label htmlFor="lastName">Last Name</label>
+            <input
+                id="lastName"
+                type="text"
+                placeholder="Enter your last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+            />
+        </div>
+        <div className="input-group">
+            <label htmlFor="phoneNumber">Phone Number</label>
+            <input
+                id="phoneNumber"
+                type="text"
+                placeholder="Enter your phone number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+        </div>
+        <div className="input-group">
+            <label htmlFor="regEmail">Email</label>
+            <input
+                id="regEmail"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+        </div>
+        <div className="input-group">
+            <label htmlFor="regPassword">Password</label>
+            <input
+                id="regPassword"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+        </div>
+        <div className="input-group">
+            <label htmlFor="verificationCode">Verification Code</label>
+            <input
+                id="verificationCode"
+                type="text"
+                placeholder="Enter the verification code"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+            />
+        </div>
+        <button onClick={handleRegister}>Create Account</button>
+    </div>
+)}
       </div>
 
       <div className="privacy-section">

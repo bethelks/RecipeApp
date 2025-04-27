@@ -3,7 +3,6 @@ import './FilterRecipes.css';
 
 const FilterRecipes = ({ allRecipes, setFilteredRecipes }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [filters, setFilters] = useState({
     vegetarian: false,
     vegan: false,
@@ -14,11 +13,14 @@ const FilterRecipes = ({ allRecipes, setFilteredRecipes }) => {
     soyFree: false,
     eggFree: false,
   });
-  const [cookingTime, setCookingTime] = useState(0);
-  const [searchTerm, setSearchTerm] = useState(""); // state for the search term
+  const [searchTerm, setSearchTerm] = useState('');
+  const [cookingTime, setCookingTime] = useState('');
+  const [cuisine, setCuisine] = useState('');
+  const [difficulty, setDifficulty] = useState('');
+  const [mealTags, setMealTags] = useState([]);
+  const [dietTags, setDietTags] = useState([]);
 
   const sidebarRef = useRef(null);
-  const filterDropdownRef = useRef(null);
 
   useEffect(() => {
     const savedFilters = JSON.parse(localStorage.getItem('filters'));
@@ -29,13 +31,13 @@ const FilterRecipes = ({ allRecipes, setFilteredRecipes }) => {
 
   useEffect(() => {
     localStorage.setItem('filters', JSON.stringify(filters));
-    applyFilters(); // Reapply filters whenever filters change
-  }, [filters, searchTerm]); // Add searchTerm to dependencies
+    applyFilters(); // Reapply filters whenever filters or search term change
+  }, [filters, searchTerm, cookingTime, cuisine, difficulty, mealTags, dietTags]);
 
   const applyFilters = () => {
-    const filtered = allRecipes.filter(recipe => {
+    const filtered = allRecipes.filter((recipe) => {
       const matchesSearchTerm = recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilters = 
+      const matchesFilters =
         (!filters.vegetarian || recipe.vegetarian) &&
         (!filters.vegan || recipe.vegan) &&
         (!filters.lowCarb || recipe.lowCarb) &&
@@ -43,36 +45,37 @@ const FilterRecipes = ({ allRecipes, setFilteredRecipes }) => {
         (!filters.lactoseFree || recipe.lactoseFree) &&
         (!filters.nutFree || recipe.nutFree) &&
         (!filters.soyFree || recipe.soyFree) &&
-        (!filters.eggFree || recipe.eggFree);
-
-      return matchesSearchTerm && matchesFilters; // return true when both conditions are met
+        (!filters.eggFree || recipe.eggFree) &&
+        (!mealTags.length || mealTags.every((tag) => recipe.mealTags?.includes(tag))) &&
+        (!dietTags.length || dietTags.every((tag) => recipe.dietTags?.includes(tag))) &&
+        (!cookingTime || parseInt(recipe.prepTime, 10) < parseInt(cookingTime, 10)) && // Handles "60 minutes or less"
+        (!cuisine || recipe.cuisine?.toLowerCase() === cuisine.toLowerCase()) &&
+        (!difficulty || recipe.difficulty?.toLowerCase() === difficulty.toLowerCase());
+  
+      return matchesSearchTerm && matchesFilters;
     });
-
-    setFilteredRecipes(filtered); // Update the filtered recipes in the parent component
+  
+    setFilteredRecipes(filtered);
   };
 
-  const handleClickOutside = (e) => {
-    if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
-      setIsSidebarOpen(false);
-    }
-    if (filterDropdownRef.current && !filterDropdownRef.current.contains(e.target)) {
-      setIsFilterDropdownOpen(false);
+  const toggleTag = (tag, selectedTags, setSelectedTags) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const handleCookingTimeChange = (value) => {
+    setCookingTime(value); // Update cooking time directly
+  };
 
-  const handleFilterChange = (e) => {
-    const { name, checked } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: checked,
-    }));
+  const handleCuisineChange = (value) => {
+    setCuisine(value); // Update cuisine directly
+  };
+
+  const handleDifficultyChange = (value) => {
+    setDifficulty(value); // Update difficulty directly
   };
 
   return (
@@ -85,77 +88,108 @@ const FilterRecipes = ({ allRecipes, setFilteredRecipes }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)} // Update search term state
         />
-        <button 
-          className="filter-button" 
-          onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-        >
-          Filters
-        </button>
-        {isFilterDropdownOpen && (
-          <div className="dropdown" ref={filterDropdownRef}>
-            <label><input type="checkbox" name="vegetarian" checked={filters.vegetarian} onChange={handleFilterChange} /> Vegetarian</label>
-            <label><input type="checkbox" name="vegan" checked={filters.vegan} onChange={handleFilterChange} /> Vegan</label>
-            <label><input type="checkbox" name="lowCarb" checked={filters.lowCarb} onChange={handleFilterChange} /> Low-carb</label>
-            <label><input type="checkbox" name="glutenFree" checked={filters.glutenFree} onChange={handleFilterChange} /> Gluten-free</label>
-            <label><input type="checkbox" name="lactoseFree" checked={filters.lactoseFree} onChange={handleFilterChange} /> Lactose-free</label>
-            <label><input type="checkbox" name="nutFree" checked={filters.nutFree} onChange={handleFilterChange} /> Nut-free</label>
-            <label><input type="checkbox" name="soyFree" checked={filters.soyFree} onChange={handleFilterChange} /> Soy-free</label>
-            <label><input type="checkbox" name="eggFree" checked={filters.eggFree} onChange={handleFilterChange} /> Egg-free</label>
-          </div>
-        )}
       </div>
 
-      {/* Sidebar for additional filters or options */}
-      <div className={`sidebar ${isSidebarOpen ? "open" : ""}`} ref={sidebarRef}>
-        <h3>Cooking time: <span>{cookingTime} min</span></h3>
-        <input 
-          type="range" 
-          min="0" 
-          max="120" 
-          value={cookingTime} 
-          onChange={(e) => setCookingTime(e.target.value)} 
-          className="cooking-time-slider"
-        />
-        <h3>Difficulty:</h3>
+      {/* Sidebar */}
+      <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`} ref={sidebarRef}>
+        <h3>Filters</h3>
+
+        {/* Meal Tags */}
         <div>
-          <label><input type="radio" name="difficulty" /> Easy</label>
+          <h4>Meal Tags</h4>
+          {['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'].map((tag) => (
+            <div
+              key={tag}
+              className={`tag ${mealTags.includes(tag) ? 'selected' : ''}`}
+              onClick={() => toggleTag(tag, mealTags, setMealTags)}
+            >
+              {tag}
+            </div>
+          ))}
         </div>
+
+        {/* Diet Tags */}
         <div>
-          <label><input type="radio" name="difficulty" /> Medium</label>
+          <h4>Diet Tags</h4>
+          {[
+            'Vegetarian',
+            'Vegan',
+            'Low-carb',
+            'Gluten-free',
+            'Lactose-free',
+            'Nut-free',
+            'Soy-free',
+            'Egg-free',
+          ].map((tag) => (
+            <div
+              key={tag}
+              className={`tag ${dietTags.includes(tag) ? 'selected' : ''}`}
+              onClick={() => toggleTag(tag, dietTags, setDietTags)}
+            >
+              {tag}
+            </div>
+          ))}
         </div>
+
+        {/* Preparation Time */}
+<div>
+  <h4>Preparation Time</h4>
+  <select
+    value={cookingTime}
+    onChange={(e) => handleCookingTimeChange(e.target.value)}
+  >
+    <option value="">None</option>
+    <option value="5">Less than 5 minutes</option>
+    <option value="10">Less than 10 minutes</option>
+    <option value="15">Less than 15 minutes</option>
+    <option value="20">Less than 20 minutes</option>
+    <option value="30">Less than 30 minutes</option>
+    <option value="45">Less than 45 minutes</option>
+    <option value="60">60+ minutes or less</option>
+  </select>
+</div>
+
+        {/* Cuisine Type */}
         <div>
-          <label><input type="radio" name="difficulty" /> Hard</label>
+          <h4>Cuisine Type</h4>
+          <select
+            value={cuisine}
+            onChange={(e) => handleCuisineChange(e.target.value)}
+          >
+            <option value="">None</option>
+            <option value="Italian">Italian</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Indian">Indian</option>
+            <option value="Chinese">Chinese</option>
+            <option value="American">American</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
-        <h3>Meal Type:</h3>
+
+        {/* Difficulty */}
         <div>
-          <label><input type="checkbox" /> Breakfast</label>
-        </div>
-        <div>
-          <label><input type="checkbox" /> Lunch</label>
-        </div>
-        <div>
-          <label><input type="checkbox" /> Dinner</label>
-        </div>
-        <div>
-          <label><input type="checkbox" /> Snack</label>
-        </div>
-        <div>
-          <label><input type="checkbox" /> Dessert</label>
+          <h4>Difficulty</h4>
+          <select
+            value={difficulty}
+            onChange={(e) => handleDifficultyChange(e.target.value)}
+          >
+            <option value="">None</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Difficult">Difficult</option>
+          </select>
         </div>
       </div>
 
-      {/* Overlay for sidebar */}
-      {isSidebarOpen && <div className="overlay" onClick={handleClickOutside}></div>}
-      
+      {/* Overlay for Sidebar */}
+      {isSidebarOpen && <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
       {/* Sidebar Button */}
-      <button 
-        className={`sidebar-button ${isSidebarOpen ? "open" : ""}`} 
-        onClick={() => {
-          setIsSidebarOpen(!isSidebarOpen);
-          setIsFilterDropdownOpen(false); // Close filter dropdown when the sidebar is opened
-        }}
+      <button
+        className={`sidebar-button ${isSidebarOpen ? 'open' : ''}`}
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
-        ☰
+        Filter ☰
       </button>
     </div>
   );

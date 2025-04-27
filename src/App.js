@@ -1,14 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-// Screens from HEAD version
+// Other imports
 import LoginScreen from "./LoginScreen";
 import ForgotPasswordScreen from "./ForgotPasswordScreen";
-
-// Screens from origin/master version
 import Home from "./components/Home";
 import TempNavigate from "./TempNavigate";
-import FilterRecipes from './components/FilterRecipes';
 import RecipeForm from './components/RecipeForm';
 import RecipePage from "./components/RecipePage";
 import Favorites from "./components/Favorites";
@@ -55,37 +52,27 @@ function App() {
     <div>
       <div onKeyDown={handleKeyDown} tabIndex={0}>
         <BrowserRouter>
-          <TempNavigate />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/recipe" element={<RecipePage />} />
-            <Route path="/form" element={<RecipeForm />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
-      <Router>
-        <header>
-          {/* Displaying the SSL certificate image */}
-          <img
-            src={`${process.env.PUBLIC_URL}/ssl_certificate.png`}
-            alt="SSL Certificate"
-            className="ssl-image"
-          />
-        </header>
+          <header>
+            {/* Displaying the SSL certificate image */}
+            <img
+              src={`${process.env.PUBLIC_URL}/ssl_certificate.png`}
+              alt="SSL Certificate"
+              className="ssl-image"
+            />
+          </header>
 
-        <div onKeyDown={handleKeyDown} tabIndex={0}>
           <TempNavigate />
 
           <Routes>
-            {/* Routes from both branches */}
             <Route path="/" element={<LoginScreen />} />
             <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
             <Route path="/home" element={<Home />} />
             <Route path="/recipe" element={<RecipePage />} />
+            <Route path="/form" element={<RecipeForm />} />
             <Route path="/favorite" element={<Favorites />} />
           </Routes>
-        </div>
-      </Router>
+        </BrowserRouter>
+      </div>
     </div>
   );
 }

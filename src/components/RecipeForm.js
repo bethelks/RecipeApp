@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './RecipeForm.css';
 
-function RecipeForm() {
+function RecipeForm({ onAddRecipe }) {
+  const navigate = useNavigate();
+  const [recipeName, setRecipeName] = useState('');
+  const [description, setDescription] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [cuisine, setCuisine] = useState('');
   const [ingredients, setIngredients] = useState([]);
   const [ingredientInput, setIngredientInput] = useState('');
-
   const [selectedMealTags, setSelectedMealTags] = useState([]);
   const [selectedDietTags, setSelectedDietTags] = useState([]);
   const [selectedDifficultyTags, setSelectedDifficultyTags] = useState([]);
-  const [prepTime, setPrepTime] = useState(''); // State for preparation time
+  const [prepTime, setPrepTime] = useState('');
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const toggleTag = (tag, selectedTags, setSelectedTags, isSingleSelect = false) => {
     if (isSingleSelect) {
-      // For single-select tags, set the selected tag to the current one or clear it if already selected
       setSelectedTags(selectedTags.includes(tag) ? [] : [tag]);
     } else {
-      // For multi-select tags, toggle the tag as usual
       if (selectedTags.includes(tag)) {
         setSelectedTags(selectedTags.filter((t) => t !== tag));
       } else {
@@ -26,7 +31,7 @@ function RecipeForm() {
 
   const addIngredient = () => {
     if (ingredientInput.trim() !== '') {
-      setIngredients([...ingredients, ingredientInput]);
+      setIngredients([...ingredients, ingredientInput.trim()]);
       setIngredientInput('');
     }
   };
@@ -35,9 +40,62 @@ function RecipeForm() {
     setIngredients(ingredients.filter((_, i) => i !== index));
   };
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result); // Set the base64 string for preview
+        setImage(reader.result); // Save the base64 string to the recipe data
+      };
+      reader.readAsDataURL(file); // Convert the file to a base64 string
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // handle form submission using selectedMealTags, selectedDietTags, selectedDifficultyTags, and prepTime
+  
+    const recipeData = {
+      title: recipeName,
+      description,
+      ingredients,
+      instructions,
+      prepTime: parseInt(prepTime, 10), // Convert to a number
+      cuisine,
+      mealTags: selectedMealTags,
+      dietTags: selectedDietTags,
+      difficulty: selectedDifficultyTags[0] || '',
+      image,
+    };
+  
+    console.log('Submitting recipe:', recipeData);
+  
+    // Save the recipe to LocalStorage
+    const existingRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+    existingRecipes.push(recipeData);
+    localStorage.setItem("recipes", JSON.stringify(existingRecipes));
+  
+    // Reset all fields after submit
+    setRecipeName('');
+    setDescription('');
+    setIngredients([]);
+    setIngredientInput('');
+    setInstructions('');
+    setPrepTime('');
+    setCuisine('');
+    setSelectedMealTags([]);
+    setSelectedDietTags([]);
+    setSelectedDifficultyTags([]);
+    setImage(null);
+    setImagePreview(null);
+  
+    // Pass the new recipe to the parent component
+    if (onAddRecipe) {
+      onAddRecipe(recipeData); // Call the function passed as a prop
+    }
+  
+    // Navigate after successful submit
+    navigate('/recipe');
   };
 
   const mealTags = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'];
@@ -52,13 +110,27 @@ function RecipeForm() {
         {/* Recipe Name */}
         <div className="form-group">
           <label htmlFor="recipeName">Recipe Name:</label>
-          <input type="text" id="recipeName" name="recipeName" required />
+          <input
+            type="text"
+            id="recipeName"
+            name="recipeName"
+            value={recipeName}
+            onChange={(e) => setRecipeName(e.target.value)}
+            required
+          />
         </div>
 
         {/* Description */}
         <div className="form-group">
           <label htmlFor="recipeDescription">Description:</label>
-          <textarea id="recipeDescription" name="recipeDescription" rows="4" required></textarea>
+          <textarea
+            id="recipeDescription"
+            name="recipeDescription"
+            rows="4"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
         </div>
 
         {/* Ingredients */}
@@ -97,34 +169,48 @@ function RecipeForm() {
         {/* Instructions */}
         <div className="form-group">
           <label htmlFor="instructions">Instructions:</label>
-          <textarea id="instructions" name="instructions" rows="6" required></textarea>
+          <textarea
+            id="instructions"
+            name="instructions"
+            rows="6"
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+            required
+          />
         </div>
 
-        {/* Preparation Time */}
-        <div className="form-group">
-          <label htmlFor="prepTime">Preparation Time (minutes):</label>
-          <select 
-            id="prepTime" 
-            name="prepTime" 
-            value={prepTime} 
-            onChange={(e) => setPrepTime(e.target.value)} 
-            required
-          >
-            <option value="">Select Time</option>
-            <option value="5">5 minutes</option>
-            <option value="10">10 minutes</option>
-            <option value="15">15 minutes</option>
-            <option value="20">20 minutes</option>
-            <option value="30">30 minutes</option>
-            <option value="45">45 minutes</option>
-            <option value="60">60 minutes</option>
-          </select>
-        </div>
+       {/* Preparation Time */}
+      <div className="form-group">
+        <label htmlFor="prepTime">Preparation Time:</label>
+        <select
+          id="prepTime"
+          name="prepTime"
+          value={prepTime}
+          onChange={(e) => setPrepTime(e.target.value)} // Use prepTime and setPrepTime
+          required
+        >
+          <option value="">None</option>
+          <option value="5">5 minutes or less</option>
+          <option value="10">10 minutes or less</option>
+          <option value="15">15 minutes or less</option>
+          <option value="20">20 minutes or less</option>
+          <option value="30">30 minutes or less</option>
+          <option value="45">45 minutes or less</option>
+          <option value="60">60+ minutes or less</option>
+        </select>
+      </div>
 
         {/* Cuisine Type */}
         <div className="form-group">
           <label htmlFor="cuisine">Cuisine Type:</label>
-          <select id="cuisine" name="cuisine" required>
+          <select
+            id="cuisine"
+            name="cuisine"
+            value={cuisine}
+            onChange={(e) => setCuisine(e.target.value)}
+            required
+          >
+            <option value="">Select Cuisine</option>
             <option value="Italian">Italian</option>
             <option value="Mexican">Mexican</option>
             <option value="Indian">Indian</option>
@@ -138,7 +224,7 @@ function RecipeForm() {
         <div className="form-group">
           <label>Meal Type:</label>
           <div className="tag-container">
-            {mealTags.map(tag => (
+            {mealTags.map((tag) => (
               <div
                 key={tag}
                 className={`tag ${selectedMealTags.includes(tag) ? 'selected' : ''}`}
@@ -154,7 +240,7 @@ function RecipeForm() {
         <div className="form-group">
           <label>Dietary Restrictions:</label>
           <div className="tag-container">
-            {dietTags.map(tag => (
+            {dietTags.map((tag) => (
               <div
                 key={tag}
                 className={`tag ${selectedDietTags.includes(tag) ? 'selected' : ''}`}
@@ -174,7 +260,7 @@ function RecipeForm() {
               <div
                 key={tag}
                 className={`tag ${selectedDifficultyTags.includes(tag) ? 'selected' : ''}`}
-                onClick={() => toggleTag(tag, selectedDifficultyTags, setSelectedDifficultyTags, true)} // Pass true for single-select
+                onClick={() => toggleTag(tag, selectedDifficultyTags, setSelectedDifficultyTags, true)}
               >
                 {tag}
               </div>
@@ -182,9 +268,30 @@ function RecipeForm() {
           </div>
         </div>
 
+        {/* Upload Image */}
+        <div className="form-group">
+          <label htmlFor="imageUpload">Upload an Image:</label>
+          <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {imagePreview && (
+            <div className="image-preview">
+              <img
+                src={imagePreview}
+                alt="Recipe Preview"
+                style={{ width: '200px', marginTop: '10px' }}
+              />
+            </div>
+          )}
+        </div>
+
         <div className="form-footer">
           <button type="submit">Submit Recipe</button>
         </div>
+
       </form>
     </div>
   );

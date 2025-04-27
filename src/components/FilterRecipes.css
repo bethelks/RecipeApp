@@ -1,9 +1,9 @@
 /* Search Bar */
 .search-container {
-  width: 80%; /* Adjust the width as needed (e.g., 80%, 50%, or a fixed width like 400px) */
-  max-width: 600px; /* Optional: Set a maximum width for larger screens */
-  margin: 0 auto; /* Center the search bar horizontally */
-  padding: 10px 0; /* Add some vertical spacing */
+  width: 80%;
+  max-width: 600px;
+  margin: 0 auto; /* Centers the search bar horizontally */
+  padding: 10px 0; /* Adds some vertical spacing */
 }
 
 .search-container input {
@@ -32,8 +32,8 @@
 /* Dropdown Menu */
 .dropdown {
     position: absolute;
-    top: 100%; /* Position below the search bar */
-    right: 0; /* Align to the right side of the search bar */
+    top: 100%;
+    right: 0;
     background: white;
     border: 1px solid #ccc;
     padding: 10px;

@@ -153,8 +153,7 @@ input, select, textarea {
     margin-top: 20px;
 }
 
-/* Add this part */
 .no-ingredients-text {
-    color: #aaa; /* Light gray color */
-    font-style: italic; /* Optional: makes it slightly distinct */
+    color: #aaa;
+    font-style: italic;
 }

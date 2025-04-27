@@ -132,22 +132,22 @@ const FilterRecipes = ({ allRecipes, setFilteredRecipes }) => {
         </div>
 
         {/* Preparation Time */}
-<div>
-  <h4>Preparation Time</h4>
-  <select
-    value={cookingTime}
-    onChange={(e) => handleCookingTimeChange(e.target.value)}
-  >
-    <option value="">None</option>
-    <option value="5">Less than 5 minutes</option>
-    <option value="10">Less than 10 minutes</option>
-    <option value="15">Less than 15 minutes</option>
-    <option value="20">Less than 20 minutes</option>
-    <option value="30">Less than 30 minutes</option>
-    <option value="45">Less than 45 minutes</option>
-    <option value="60">60+ minutes or less</option>
-  </select>
-</div>
+        <div>
+          <h4>Preparation Time</h4>
+          <select
+            value={cookingTime}
+            onChange={(e) => handleCookingTimeChange(e.target.value)}
+          >
+            <option value="">None</option>
+            <option value="5">Less than 5 minutes</option>
+            <option value="10">Less than 10 minutes</option>
+            <option value="15">Less than 15 minutes</option>
+            <option value="20">Less than 20 minutes</option>
+            <option value="30">Less than 30 minutes</option>
+            <option value="45">Less than 45 minutes</option>
+            <option value="60">60+ minutes or less</option>
+          </select>
+        </div>
 
         {/* Cuisine Type */}
         <div>

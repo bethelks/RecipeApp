@@ -975,11 +975,47 @@ const RecipePage = ({ favorites, toggleFavorite }) => {
   };
 
   const handleReviewSubmit = (recipeId, reviewData) => {
+    // Update local state
     setReviews((prev) => ({
       ...prev,
       [recipeId]: [...(prev[recipeId] || []), reviewData],
     }));
+  
+    // Send to API
+    const apiUrl = 'https://api.bethelprojects.site:1443/api/User/add';
+    const params = new URLSearchParams({
+      id: recipeId,
+      rating: reviewData.rating.toString(),
+      review: reviewData.review
+    });
+  
+    fetch(`${apiUrl}?${params.toString()}`, {
+      method: 'GET'
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(data => {
+      console.log('API response:', data);
+      // Optionally show success message
+    })
+    .catch(error => {
+      console.error('Error adding review:', error);
+      // Optionally show error message
+    });
   };
+  
+  // And update how you render RecipeReview in your map function:
+  {filteredRecipes.map((recipe) => (
+    <div key={recipe.id} className="recipe-card">
+      {/* ... other recipe content ... */}
+      <RecipeReview 
+        onSubmit={(reviewData) => handleReviewSubmit(recipe.id, reviewData)} 
+      />
+      {/* ... rest of your recipe card ... */}
+    </div>
+  ))}
 
   return (
       <div className="recipe-page-container">

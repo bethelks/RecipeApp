@@ -1,42 +1,20 @@
 import React, { useState } from 'react';
 
-const RecipeReview = () => {
+const RecipeReview = ({ onSubmit }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitted review:', { rating, review });
-  
-    // Replace 'your-api-endpoint-url' with your actual API URL
-    const apiUrl = 'https://yourapi.com/api/yourcontroller/add';
-  
-    // Construct query parameters
-    const params = new URLSearchParams({
-      id: 'your-item-id',     // Replace with your actual item ID
-      rating: rating.toString(),
-      review: review
-    });
-  
-    // Send GET request to the API
-    fetch(`${apiUrl}?${params.toString()}`, {
-      method: 'GET'
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('API response:', data);
-      // Optionally, show success message or update UI
-    })
-    .catch(error => {
-      console.error('Error adding review:', error);
-      // Optionally, show error message
-    });
-  
+    
+    const reviewData = {
+      rating,
+      review,
+      date: new Date().toISOString() // Optional: add timestamp
+    };
+    
+    onSubmit(reviewData);
+    
     // Reset form
     setRating(0);
     setReview('');

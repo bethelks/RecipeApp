@@ -1,1 +1,60 @@
- 
+.favorites-page {
+    padding: 20px;
+}
+
+.favorites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Space between favorite recipe cards */
+}
+
+.favorite-card {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+}
+
+.favorite-card:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-image {
+    width: 150px; /* Fixed width for the images */
+    height: auto; 
+}
+
+.favorite-info {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.favorite-title {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.favorite-description {
+    margin: 8px 0;
+}
+
+.remove-favorite-button {
+    background-color: #ff4f4f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.remove-favorite-button:hover {
+    background-color: #c70000; 
+}
+
+.no-favorites {
+    font-size: 1.2em;
+    text-align: center;
+}

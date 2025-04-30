@@ -3,6 +3,7 @@ import './RecipePage.css';
 import SearchBar from './SearchBar'; 
 import FilterRecipes from './FilterRecipes'; 
 import RecipeList from './RecipeList'; 
+import RecipeReview from './RecipeReview';
 
 const allRecipes = [
   {
@@ -642,6 +643,7 @@ const RecipePage = ({ favorites, toggleFavorite }) => {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [filters, setFilters] = useState({});
+  const [reviews, setReviews] = useState({});
 
   useEffect(() => {
       const storedRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
@@ -662,6 +664,13 @@ const RecipePage = ({ favorites, toggleFavorite }) => {
       });
 
       setFilteredRecipes(filtered);
+  };
+
+  const handleReviewSubmit = (recipeId, reviewData) => {
+    setReviews((prev) => ({
+      ...prev,
+      [recipeId]: [...(prev[recipeId] || []), reviewData],
+    }));
   };
 
   return (
@@ -727,6 +736,9 @@ const RecipePage = ({ favorites, toggleFavorite }) => {
                                   ))}
                               </ul>
                           </div>
+
+                          <RecipeReview onSubmit={(reviewData) => handleReviewSubmit(recipe.id, reviewData)} />
+
 
                           <button onClick={() => toggleFavorite(recipe)}>
                               {favorites.some(fav => fav.id === recipe.id) ? 'Remove from Favorites' : 'Add to Favorites'}

@@ -638,138 +638,104 @@ const allRecipes = [
   },
 ];
 
-const RecipePage = () => {
-  const [recipes, setRecipes] = useState([]); // All recipes
-  const [filteredRecipes, setFilteredRecipes] = useState([]); // Filtered recipes
-  const [searchTerm, setSearchTerm] = useState('');
-  const [favorites, setFavorites] = useState([]);
-  const [filters, setFilters] = useState({}); // Active filter criteria
+const RecipePage = ({ favorites, toggleFavorite }) => {
+  const [recipes, setRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [filters, setFilters] = useState({});
 
   useEffect(() => {
-    // Retrieve user-created recipes from localStorage
-    const storedRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
-    
-    // Combine stored recipes with the allRecipes
-    const combinedRecipes = [...storedRecipes, ...allRecipes];
-    setRecipes(combinedRecipes);
-    setFilteredRecipes(combinedRecipes); // Initialize filteredRecipes with all recipes
+      const storedRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+      const combinedRecipes = [...storedRecipes, ...allRecipes];
+      setRecipes(combinedRecipes);
+      setFilteredRecipes(combinedRecipes); // Initialize with all recipes
   }, []); 
 
-  const handleSearchChange = (event) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-
-    // Filter recipes based on search term
-    const filtered = recipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(term.toLowerCase()) 
-    );
-    setFilteredRecipes(filtered);
-  };
-
-  const toggleFavorite = (recipe) => {
-    const updatedFavorites = favorites.includes(recipe)
-      ? favorites.filter((fav) => fav !== recipe)
-      : [...favorites, recipe];
-    setFavorites(updatedFavorites);
-  };
-
   const applyFilters = (filterName, value) => {
-    const newFilters = { ...filters, [filterName]: value };
-    setFilters(newFilters);
+      const newFilters = { ...filters, [filterName]: value };
+      setFilters(newFilters);
 
-    // Filter the recipes based on selected filters
-    const filtered = recipes.filter((recipe) => {
-      return Object.keys(newFilters).every((key) => {
-        if (!newFilters[key]) return true; // If the filter isn't active, don't filter by it
-        return recipe[key] === true;
+      const filtered = recipes.filter((recipe) => {
+          return Object.keys(newFilters).every((key) => {
+              if (!newFilters[key]) return true; 
+              return recipe[key] === true; 
+          });
       });
-    });
 
-    setFilteredRecipes(filtered);
+      setFilteredRecipes(filtered);
   };
 
   return (
-    <div className="recipe-page-container">
-      <h1>Recipe Page</h1>
+      <div className="recipe-page-container">
+          <h1>Recipe Page</h1>
 
-      {/* Filter Buttons */}
-      <div className="filter-buttons">
-        <FilterRecipes 
-          allRecipes={recipes} 
-          setFilteredRecipes={setFilteredRecipes} 
-          applyFilters={applyFilters} 
-        />
-      </div>
+          <div className="filter-buttons">
+              <FilterRecipes 
+                  allRecipes={recipes} 
+                  setFilteredRecipes={setFilteredRecipes} 
+                  applyFilters={applyFilters} 
+              />
+          </div>
 
-      {/* Recipe List */}
-      <div className="recipe-list">
-        {filteredRecipes.length === 0 ? (
-          <p>No recipes found</p>
-        ) : (
-          filteredRecipes.map((recipe, index) => (
-            <div key={index} className="recipe-card">
-              <h2>{recipe.title}</h2>
-              <p>{recipe.description}</p>
+          <div className="recipe-list">
+              {filteredRecipes.length === 0 ? (
+                  <p>No recipes found</p>
+              ) : (
+                  filteredRecipes.map((recipe) => (
+                      <div key={recipe.id} className="recipe-card">
+                          <h2>{recipe.title}</h2>
+                          <p>{recipe.description}</p>
+                          {recipe.image && (
+                              <div className="image-container">
+                                  <img
+                                      src={recipe.image}
+                                      alt={`${recipe.title} preview`}
+                                      style={{ width: '200px', marginTop: '10px' }}
+                                  />
+                              </div>
+                          )}
+                          <div className="ingredients">
+                              <strong>Ingredients:</strong>
+                              <ul>
+                                  {recipe.ingredients && recipe.ingredients.map((ingredient, idx) => (
+                                      <li key={idx}>{ingredient}</li>
+                                  ))}
+                              </ul>
+                          </div>
 
-              {/* Image Display */}
-              {recipe.image && (
-                <div className="image-container">
-                  <img
-                    src={recipe.image}
-                    alt={`${recipe.title} preview`}
-                    style={{ width: '200px', marginTop: '10px' }}
-                  />
-                </div>
+                          <div className="instructions">
+                              <strong>Instructions:</strong>
+                              <p>{recipe.instructions}</p>
+                          </div>
+
+                          {recipe.difficulty && (
+                              <div className="difficulty">
+                                  <strong>Difficulty:</strong> {recipe.difficulty}
+                              </div>
+                          )}
+
+                          <div className="tags">
+                              <strong>Meal Tags:</strong>
+                              <ul>
+                                  {recipe.mealTags && recipe.mealTags.map((tag, idx) => (
+                                      <li key={idx}>{tag}</li>
+                                  ))}
+                              </ul>
+                              <strong>Diet Tags:</strong>
+                              <ul>
+                                  {recipe.dietTags && recipe.dietTags.map((tag, idx) => (
+                                      <li key={idx}>{tag}</li>
+                                  ))}
+                              </ul>
+                          </div>
+
+                          <button onClick={() => toggleFavorite(recipe)}>
+                              {favorites.some(fav => fav.id === recipe.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                          </button>
+                      </div>
+                  ))
               )}
-
-              {/* Ingredients */}
-              <div className="ingredients">
-                <strong>Ingredients:</strong>
-                <ul>
-                  {recipe.ingredients && recipe.ingredients.map((ingredient, idx) => (
-                    <li key={idx}>{ingredient}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Instructions */}
-              <div className="instructions">
-                <strong>Instructions:</strong>
-                <p>{recipe.instructions}</p>
-              </div>
-
-              {/* Difficulty */}
-              {recipe.difficulty && (
-                <div className="difficulty">
-                  <strong>Difficulty:</strong> {recipe.difficulty}
-                </div>
-              )}
-
-              {/* Tags */}
-              <div className="tags">
-                <strong>Meal Tags:</strong>
-                <ul>
-                  {recipe.mealTags && recipe.mealTags.map((tag, idx) => (
-                    <li key={idx}>{tag}</li>
-                  ))}
-                </ul>
-                <strong>Diet Tags:</strong>
-                <ul>
-                  {recipe.dietTags && recipe.dietTags.map((tag, idx) => (
-                    <li key={idx}>{tag}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Favorite Button */}
-              <button onClick={() => toggleFavorite(recipe)}>
-                {favorites.includes(recipe) ? 'Remove from Favorites' : 'Add to Favorites'}
-              </button>
-            </div>
-          ))
-        )}
+          </div>
       </div>
-    </div>
   );
 };
 

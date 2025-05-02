@@ -7,6 +7,8 @@ import TempNavigate from "./TempNavigate";
 import RecipeForm from './components/RecipeForm';
 import RecipePage from "./components/RecipePage";
 import Favorites from "./components/Favorites";
+import SingleRecipePage from './components/SingleRecipePage';
+
 
 import './App.css';
 
@@ -85,6 +87,9 @@ function App() {
                         <Route path="/recipe" element={<RecipePage favorites={favorites} toggleFavorite={toggleFavorite} />} />
                         <Route path="/form" element={<RecipeForm />} />
                         <Route path="/favorite" element={<Favorites favorites={favorites} toggleFavorite={toggleFavorite} />} />
+                        <Route path="/recipe/:id" element={<SingleRecipePage />} />
+                        
+
                     </Routes>
                 </BrowserRouter>
             </div>

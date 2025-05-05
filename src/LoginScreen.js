@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from 'axios'; // Import axios for HTTP requests
 import "./LoginScreen.css"; // Import your CSS for styling
 import logo from './assets/images/company-logo.png';
+import sslLogo from './assets/images/ssl_certificate.png'
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -172,7 +173,7 @@ export default function LoginScreen() {
 
       <div className="privacy-section">
         <p>By logging in, you agree to our <a href="/privacy-policy">Privacy Policy</a>.</p>
-        <p>SSL Secured <img src="/ssl_certificate.png" alt="SSL Certificate" className="ssl-logo" /></p>
+        <p><img src={sslLogo} alt="SSL Certificate" className="ssl-logo" /></p>
       </div>
     </div>
   );

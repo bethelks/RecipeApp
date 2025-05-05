@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 
-const RecipeReview = () => {
+const RecipeReview = ({ onSubmit }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitted review:', { rating, review });
+    
+    const reviewData = {
+      rating,
+      review,
+      date: new Date().toISOString() // Optional: add timestamp
+    };
+    
+    onSubmit(reviewData);
+    
+    // Reset form
     setRating(0);
     setReview('');
   };

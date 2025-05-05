@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Favorites.css';
 import Collections from './Collections'; // Import Collections component
 
-const Favorites = ({ onToggleFavorite }) => {
+const Favorites = ({ toggleFavorite }) => {
   const [favorites, setFavorites] = useState([]);
 
   // Load favorites from localStorage on mount
@@ -18,7 +18,7 @@ const Favorites = ({ onToggleFavorite }) => {
     const updatedFavorites = favorites.filter((fav) => fav.id !== recipe.id);
     setFavorites(updatedFavorites);
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-    onToggleFavorite(recipe);
+    toggleFavorite(recipe);
   };
 
   return (
